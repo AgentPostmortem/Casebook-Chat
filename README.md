@@ -2,7 +2,7 @@
 
 A streaming AI chat UI that investigates AI-agent failures. Ask about an incident and the assistant searches the live [AgentPostmortem](https://mcp.agentpostmortem.com) case registry, pulls full case files, and answers with cited case IDs. Tool calls render inline as collapsible chips while the response streams.
 
-Part of a three-project portfolio, alongside [RelayG](https://github.com/royalpinto007/relayg) and [hire.agentpostmortem.com](https://hire.agentpostmortem.com).
+Part of a three-project portfolio, alongside [RelayG](https://github.com/AgentPostmortem/relayg) and [hire.agentpostmortem.com](https://hire.agentpostmortem.com).
 
 ## Architecture
 
@@ -53,4 +53,4 @@ npm run deploy   # build + wrangler deploy (set GROQ_API_KEY as a Worker secret)
 
 - Registry MCP server: https://mcp.agentpostmortem.com
 - Hiring page: https://hire.agentpostmortem.com
-- RelayG: https://github.com/royalpinto007/relayg
+- RelayG: https://github.com/AgentPostmortem/relayg
