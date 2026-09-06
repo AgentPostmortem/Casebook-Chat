@@ -36,12 +36,22 @@ app.post("/api/chat", async (c) => {
     );
   }
 
+  let modelMessages;
+  try {
+    modelMessages = await convertToModelMessages(messages);
+  } catch {
+    return c.json(
+      { error: "bad_request", message: "Expected { messages: UIMessage[] }." },
+      400,
+    );
+  }
+
   const groq = createGroq({ apiKey: c.env.GROQ_API_KEY });
 
   const result = streamText({
     model: groq("llama-3.3-70b-versatile"),
     system: SYSTEM_PROMPT,
-    messages: await convertToModelMessages(messages),
+    messages: modelMessages,
     tools: registryTools,
     stopWhen: stepCountIs(5),
   });
