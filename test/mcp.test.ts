@@ -121,6 +121,24 @@ describe("callMcpTool", () => {
     const out = await callMcpTool("search_cases", { query: "x" }, mockFetch as unknown as typeof fetch);
     expect(out).toBe("Registry error: invalid response body");
   });
+
+  it.each([
+    {},
+    [],
+    null,
+    { jsonrpc: "1.0", id: 1, result: {} },
+    { jsonrpc: "2.0", id: 1, result: {}, error: { code: -1, message: "both" } },
+  ])("rejects malformed JSON-RPC response shapes", async (body) => {
+    const mockFetch = vi.fn().mockResolvedValue(jsonResponse(body));
+
+    const out = await callMcpTool(
+      "search_cases",
+      { query: "x" },
+      mockFetch as unknown as typeof fetch,
+    );
+
+    expect(out).toBe("Registry error: invalid response body");
+  });
 });
 
 describe("parseSseJsonRpc", () => {

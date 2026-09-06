@@ -65,6 +65,10 @@ export async function callMcpTool(
     return "Registry error: invalid response body";
   }
 
+  if (!isJsonRpcResponse(payload)) {
+    return "Registry error: invalid response body";
+  }
+
   if (payload.error) {
     return `Registry error: ${payload.error.message}`;
   }
@@ -74,6 +78,29 @@ export async function callMcpTool(
     return `Tool error: ${text || "unknown tool failure"}`;
   }
   return text || "No results found in the registry.";
+}
+
+function isJsonRpcResponse(value: unknown): value is JsonRpcResponse {
+  if (typeof value !== "object" || value === null || Array.isArray(value)) return false;
+  const payload = value as Record<string, unknown>;
+  const validId =
+    payload.id === null || typeof payload.id === "number" || typeof payload.id === "string";
+  const hasResult = Object.hasOwn(payload, "result");
+  const hasError = Object.hasOwn(payload, "error");
+  if (payload.jsonrpc !== "2.0" || !validId || hasResult === hasError) return false;
+
+  if (hasError) {
+    const error = payload.error;
+    return (
+      typeof error === "object" &&
+      error !== null &&
+      !Array.isArray(error) &&
+      typeof (error as Record<string, unknown>).code === "number" &&
+      typeof (error as Record<string, unknown>).message === "string"
+    );
+  }
+
+  return typeof payload.result === "object" && payload.result !== null && !Array.isArray(payload.result);
 }
 
 /** Parse the last JSON-RPC message out of an SSE response body. */
