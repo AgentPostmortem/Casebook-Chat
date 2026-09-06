@@ -23,7 +23,7 @@ One Cloudflare Worker serves both the static UI (Workers assets) and the API. `P
 - `get_case(id)` - full detail of one case (facts, unknowns, lessons)
 - `similar_failures(description)` - match a described incident against the casebook
 
-Each tool is a `fetch` to the MCP server using JSON-RPC `tools/call`. Multi-step tool chains are allowed (up to 5 steps), and the result streams back with `toUIMessageStreamResponse()`, so the UI sees tool inputs and outputs as typed message parts.
+Each tool is a `fetch` to the MCP server using JSON-RPC `tools/call`; the client validates that a tool name is present before sending a request. Multi-step tool chains are allowed (up to 5 steps), and the result streams back with `toUIMessageStreamResponse()`, so the UI sees tool inputs and outputs as typed message parts.
 
 ## Quickstart
 
