@@ -2,6 +2,9 @@ import { tool } from "ai";
 import { z } from "zod";
 import { callMcpTool } from "./mcp";
 
+const nonBlankInput = (description: string) =>
+  z.string().trim().min(1, "Input must not be blank").describe(description);
+
 /**
  * AI SDK tool definitions, each backed by a JSON-RPC tools/call to the
  * live Casebook MCP registry at mcp.agentpostmortem.com.
@@ -11,9 +14,7 @@ export const registryTools = {
     description:
       "Full-text search over documented AI-agent failure cases. Returns case summaries with case IDs, ranked by relevance.",
     inputSchema: z.object({
-      query: z
-        .string()
-        .describe("Search terms, e.g. 'refund prompt injection'"),
+      query: nonBlankInput("Search terms, e.g. 'refund prompt injection'"),
     }),
     execute: async ({ query }) => callMcpTool("search_cases", { query }),
   }),
@@ -21,7 +22,7 @@ export const registryTools = {
     description:
       "Fetch the full detail of one failure case by its case number (e.g. 'APM-0048'): outcome, verified facts, unknowns, lessons.",
     inputSchema: z.object({
-      id: z.string().describe("Case number, e.g. 'APM-0048'"),
+      id: nonBlankInput("Case number, e.g. 'APM-0048'"),
     }),
     execute: async ({ id }) => callMcpTool("get_case", { id }),
   }),
@@ -29,9 +30,7 @@ export const registryTools = {
     description:
       "Given a plain-language description of an incident, find the most similar documented agent failures and how they were fixed.",
     inputSchema: z.object({
-      description: z
-        .string()
-        .describe("Plain-language description of the incident"),
+      description: nonBlankInput("Plain-language description of the incident"),
     }),
     execute: async ({ description }) =>
       callMcpTool("similar_failures", { description }),
