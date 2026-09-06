@@ -27,11 +27,16 @@ export async function callMcpTool(
   args: Record<string, unknown>,
   fetchImpl: typeof fetch = fetch,
 ): Promise<string> {
+  const toolName = name.trim();
+  if (!toolName) {
+    return "Tool error: tool name is required";
+  }
+
   const body = {
     jsonrpc: "2.0" as const,
     id: ++rpcId,
     method: "tools/call",
-    params: { name, arguments: args },
+    params: { name: toolName, arguments: args },
   };
 
   let res: Response;

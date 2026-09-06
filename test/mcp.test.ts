@@ -14,6 +14,15 @@ function jsonResponse(body: unknown, init?: ResponseInit) {
 }
 
 describe("callMcpTool", () => {
+  it.each(["", "   "])("rejects a blank tool name without calling fetch", async (name) => {
+    const mockFetch = vi.fn();
+
+    const out = await callMcpTool(name, {}, mockFetch as unknown as typeof fetch);
+
+    expect(out).toBe("Tool error: tool name is required");
+    expect(mockFetch).not.toHaveBeenCalled();
+  });
+
   it("sends a JSON-RPC tools/call request with the right headers", async () => {
     const mockFetch = vi.fn().mockResolvedValue(
       jsonResponse({
