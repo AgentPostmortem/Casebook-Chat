@@ -13,8 +13,16 @@ export function friendlyError(raw: string): string {
 
 /** One-line summary of a tool result for the collapsed chip. */
 export function summarizeOutput(output: unknown): string {
-  const text =
-    typeof output === "string" ? output : JSON.stringify(output ?? "");
+  let text: string;
+  if (typeof output === "string") {
+    text = output;
+  } else {
+    try {
+      text = JSON.stringify(output ?? "");
+    } catch {
+      text = String(output);
+    }
+  }
   const flat = text.replace(/\s+/g, " ").trim();
   return flat.length > 120 ? flat.slice(0, 117) + "..." : flat;
 }

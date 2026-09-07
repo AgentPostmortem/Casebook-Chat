@@ -37,4 +37,11 @@ describe("summarizeOutput", () => {
   it("stringifies non-string output", () => {
     expect(summarizeOutput({ a: 1 })).toBe('{"a":1}');
   });
+
+  it("handles circular objects without throwing", () => {
+    const circular: Record<string, unknown> = {};
+    circular.self = circular;
+    expect(typeof summarizeOutput(circular)).toBe("string");
+    expect(summarizeOutput(circular)).toBe("[object Object]");
+  });
 });
